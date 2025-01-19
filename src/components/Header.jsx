@@ -21,7 +21,7 @@ const Header = ({ searchMovies }) => {
             <sup className="star-number">{starredMovies.length}</sup>
             </>
           ) : (
-            <i className="bi bi-star" />
+            <i className="bi bi-star" />  
           )}
         </NavLink>
         <NavLink to="/watch-later" className="nav-fav">
@@ -37,7 +37,7 @@ const Header = ({ searchMovies }) => {
             placeholder="Search movies..." 
             aria-label="Search movies" 
             aria-describedby="search-addon" 
-            />
+            />  
         </Link>            
       </div>      
     </header>
