@@ -1,9 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Routes, Route, createSearchParams, useSearchParams, useNavigate } from "react-router-dom"
-import { useDispatch, useSelector } from 'react-redux'
 import 'reactjs-popup/dist/index.css'
-import { fetchMovies } from './data/moviesSlice'
-import { ENDPOINT_SEARCH, ENDPOINT_DISCOVER, ENDPOINT, API_KEY } from './constants'
+import { ENDPOINT, API_KEY } from './constants'
 import Header from './components/Header'
 import Movies from './components/Movies'
 import Starred from './components/Starred'
@@ -12,51 +10,33 @@ import MovieModal from './components/MovieModal'
 import './app.scss'
 
 const App = () => {
-
-  const state = useSelector((state) => state)
-  const { movies } = state  
-  const dispatch = useDispatch()
-  const [searchParams, setSearchParams] = useSearchParams()
+  
+  const [searchParams, setSearchParams] = useSearchParams() 
   const searchQuery = searchParams.get('search')
+
   const [videoKey, setVideoKey] = useState()
   const [isOpen, setOpen] = useState(false)
   const navigate = useNavigate()
-  
+
   const closeModal = () => setOpen(false)
   
   const closeCard = () => {
 
   }
-
-  const getSearchResults = (query) => {
-    if (query !== '') {
-      dispatch(fetchMovies(`${ENDPOINT_SEARCH}&query=`+query))
-      setSearchParams(createSearchParams({ search: query }))
-    } else {
-      dispatch(fetchMovies(ENDPOINT_DISCOVER))
-      setSearchParams()
-    }
-  }
-
+  
   const searchMovies = (query) => {
     navigate('/')
-    getSearchResults(query)
-  }
-
-  const getMovies = () => {
-    if (searchQuery) {
-        dispatch(fetchMovies(`${ENDPOINT_SEARCH}&query=`+searchQuery))
+    if (query !== '') {
+      setSearchParams(createSearchParams({ search: query }))
     } else {
-        dispatch(fetchMovies(ENDPOINT_DISCOVER))
+      setSearchParams()
     }
   }
 
   const viewTrailer = (movie) => {
     getMovie(movie.id)
     if (!videoKey) setOpen(true)
-      console.debug(isOpen, "Open")
     setOpen(true)
-    
   }
 
   const getMovie = async (id) => {
@@ -72,10 +52,6 @@ const App = () => {
     }
   }
 
-  useEffect(() => {
-    getMovies()
-  }, [])
-
   return (
     <div className="App">
 
@@ -84,7 +60,7 @@ const App = () => {
       <div className="container">
      
         <Routes>
-          <Route path="/" element={<Movies movies={movies} viewTrailer={viewTrailer} closeCard={closeCard} />} />
+          <Route path="/" element={<Movies searchQuery={searchQuery}viewTrailer={viewTrailer} closeCard={closeCard} />} />
           <Route path="/starred" element={<Starred viewTrailer={viewTrailer} />} />
           <Route path="/watch-later" element={<WatchLater viewTrailer={viewTrailer} />} />
           <Route path="*" element={<h1 className="not-found">Page Not Found</h1>} />
