@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchMovies } from "../data/moviesSlice";
 import useInfiniteScroll from "./useInfiniteScroll";
@@ -10,14 +10,6 @@ const useFetchMovies = (searchQuery) => {
   const [data, setMovies] = useState([]);
   const { loading, setLoading, page, setPage } = useInfiniteScroll();
 
-  useEffect(() => {
-    setMovies([]); // reset movies on search change
-    setPage(1);
-  }, [searchQuery]);
-
-  useEffect(() => {
-    loadMovies();
-  }, [page, loadMovies]);
 
   const loadMovies = useCallback(() => {
     const endpoint = searchQuery
@@ -33,6 +25,15 @@ const useFetchMovies = (searchQuery) => {
     
     setLoading(movies.fetchStatus != "loading");
   }, [movies.fetchStatus]);
+
+  useEffect(() => {
+    setMovies([]);
+    setPage(1);
+  }, [searchQuery]);
+
+  useEffect(() => {
+    loadMovies();
+  }, [page, loadMovies]);
 
   return {
     movies: data,
